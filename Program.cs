@@ -1,5 +1,6 @@
 using appTeste.Components;
 using appTeste.Configs;
+using appTeste.DAO;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,6 +10,7 @@ builder.Services.AddRazorComponents()
 
 // Configurações da Conexão com a Banco de Dados MYSQL
 builder.Services.AddScoped<Conexao>();
+builder.Services.AddScoped<ProcessoDAO>();
 
 var app = builder.Build();
 
