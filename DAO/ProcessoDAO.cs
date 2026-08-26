@@ -18,7 +18,6 @@ public class ProcessoDAO
 
             // Buscando e abrindo a conexão com o banco de dados
             using var con = _conexao.GetConnection();
-            con.Open();
 
             string sql = "SELECT * FROM processos";
             using var comando = con.CreateCommand();
@@ -34,7 +33,7 @@ public class ProcessoDAO
                 processo.Interresado = leitor.GetString("interresado_pro");
                 processo.Assunto = leitor.GetString("assunto_pro");
                 processo.Descricao = leitor.GetString("descricao_pro");
-                processo.Situacao = leitor.GetString("situacao_pro");
+                processo.Situacao = leitor.GetString("sintuacao_pro");
 
                 //processo.Data = leitor["data_pro"];
 
