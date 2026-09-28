@@ -12,25 +12,31 @@ public class ProcessoDAO
 
     public void Inserir(Processo processo)
     {
-        try
+        using var con = _conexao.GetConnection();
+
+        // Garante que a conexão seja aberta antes da execução
+        if (con.State != System.Data.ConnectionState.Open)
         {
-            // Buscando e abrindo a conexão com o banco de dados
-            using var con = _conexao.GetConnection();
-            string sql = "INSERT INTO processos (numero_pro, interresado_pro, assunto_pro, descricao_pro, sintuacao_pro) VALUES (@numero, @interresado, @assunto, @descricao, @situacao)";
-            using var comando = con.CreateCommand();
-            comando.CommandText = sql;
-            comando.Parameters.AddWithValue("@numero", processo.Numero);
-            comando.Parameters.AddWithValue("@interresado", processo.Interresado);
-            comando.Parameters.AddWithValue("@assunto", processo.Assunto);
-            comando.Parameters.AddWithValue("@descricao", processo.Descricao);
-            comando.Parameters.AddWithValue("@situacao", processo.Situacao);
-            comando.ExecuteNonQuery();
+            con.Open();
         }
-        catch
-        {
-            throw;
-        }
+
+        string sql = @"INSERT INTO processos
+    (numero_pro, data_pro, interresado_pro, assunto_pro, descricao_pro, situacao_pro)
+    VALUES
+    (@numero, @data, @Interresado, @assunto, @descricao, @situacao)";
+
+        using var comando = con.CreateCommand();
+        comando.CommandText = sql;
+        comando.Parameters.AddWithValue("@numero", processo.Numero);
+        comando.Parameters.AddWithValue("@data", processo.Data!.Value.ToDateTime(TimeOnly.MinValue));
+        comando.Parameters.AddWithValue("@interessado", processo.Interresado);
+        comando.Parameters.AddWithValue("@assunto", processo.Assunto);
+        comando.Parameters.AddWithValue("@descricao", processo.Descricao ?? "");
+        comando.Parameters.AddWithValue("@situacao", processo.Situacao);
+
+        comando.ExecuteNonQuery();
     }
+    //Interresado
     public List<Processo> Listar()
     {
         try

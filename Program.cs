@@ -32,3 +32,6 @@ app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode();
 
 app.Run();
+
+builder.Services.AddRazorComponents()
+    .AddInteractiveServerComponents(options => options.DetailedErrors = true);
