@@ -10,6 +10,27 @@ public class ProcessoDAO
         _conexao = conexao;
     }
 
+    public void Inserir(Processo processo)
+    {
+        try
+        {
+            // Buscando e abrindo a conexão com o banco de dados
+            using var con = _conexao.GetConnection();
+            string sql = "INSERT INTO processos (numero_pro, interresado_pro, assunto_pro, descricao_pro, sintuacao_pro) VALUES (@numero, @interresado, @assunto, @descricao, @situacao)";
+            using var comando = con.CreateCommand();
+            comando.CommandText = sql;
+            comando.Parameters.AddWithValue("@numero", processo.Numero);
+            comando.Parameters.AddWithValue("@interresado", processo.Interresado);
+            comando.Parameters.AddWithValue("@assunto", processo.Assunto);
+            comando.Parameters.AddWithValue("@descricao", processo.Descricao);
+            comando.Parameters.AddWithValue("@situacao", processo.Situacao);
+            comando.ExecuteNonQuery();
+        }
+        catch
+        {
+            throw;
+        }
+    }
     public List<Processo> Listar()
     {
         try
@@ -35,15 +56,14 @@ public class ProcessoDAO
                 processo.Descricao = leitor.GetString("descricao_pro");
                 processo.Situacao = leitor.GetString("sintuacao_pro");
 
-                //processo.Data = leitor["data_pro"];
-
                 lista.Add(processo);
             }
 
             return lista;
 
         }
-        catch 
+
+        catch
         {
             throw;
         }
