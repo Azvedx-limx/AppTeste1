@@ -2,25 +2,29 @@
 
 namespace appTeste.Configs
 {
-    public class Conexao
+    public static class DAOHelper
     {
-        private readonly string _connectionString;
-        public Conexao(IConfiguration configuration)
+        public class Conexao
         {
-            _connectionString = configuration.GetConnectionString("MySqlConnection") ?? "";
-        }
+            private readonly string _connectionString;
+            public Conexao(IConfiguration configuration)
+            {
+                _connectionString = configuration.GetConnectionString("MySqlConnection") ?? "";
+            }
 
-        public MySqlConnection GetConnection()
-        {
-            var conn = new MySqlConnection(_connectionString);
-            conn.Open();
-            return conn;
-        }
+            public MySqlConnection GetConnection()
+            {
+                var conn = new MySqlConnection(_connectionString);
+                conn.Open();
+                return conn;
+            }
 
-        public MySqlCommand CreateCommand(string query, MySqlConnection? conn = null)
-        {
-            conn ??= GetConnection();
-            return new MySqlCommand(query, conn);
+            public MySqlCommand CreateCommand(string query, MySqlConnection? conn = null)
+            {
+                conn ??= GetConnection();
+                return new MySqlCommand(query, conn);
+            }
         }
-    }
+    }    
+
 }

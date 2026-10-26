@@ -42,16 +42,18 @@ er mb-4">
 						<td> 
 							<i class="bi bi-clock"></i>@p.Situacao
 						</td>
-						<td class="text-end">
-							<div class="btn-group btn-group-sm">
-								<a href="#" class="btn btn-light border text-primary" title="Editar">
-									<i class="bi bi-pencil"></i>
-								</a>
-								<a href="#" class="btn btn-light border text-primary" title="Excluir">
-									<i class="bi bi-trash"></i>
-								</a>
-							</div>
-						</td>
+						 class="text-end">
+ <div class="btn-group btn-group-sm">
+ <a href="@($"/processos/editar/{p.Id}")" class="btn btn-light
+border text-primary" title="Editar">
+ <i class="bi bi-pencil"></i>
+ </a>
+ <a href="#" class="btn btn-light border text-danger"
+title="Excluir">
+ <i class="bi bi-trash"></i>
+ </a>
+ </div>
+</td>
 					</tr>
 				}
 			</tbody>

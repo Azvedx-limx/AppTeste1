@@ -1,4 +1,5 @@
 ﻿@page "/processos/cadastro"
+@page "/processos/editar/{Id:int}"
 @rendermode InteractiveServer
 @inject ProcessoDAO dao
 @inject NavigationManager NavigationManager
@@ -11,14 +12,13 @@
     </div>
 </div>
 
-@if (!string.IsNullOrEmpty(mensagemErro))
-{
-    <div class="alert alert-danger alert-dismissible fade show" role="alert">
-        <strong>Ocorreu um erro ao salvar:</strong> @mensagemErro
-    </div>
-}
-
 <div class="custom-table-card p-4">
+    @if (!string.IsNullOrEmpty(mensagemErro))
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <strong>Ocorreu um erro ao salvar:</strong> @mensagemErro
+        </div>
+    }
     <EditForm Model="processo" OnValidSubmit="Salvar">
         <DataAnnotationsValidator />
         <ValidationSummary class="alert alert-danger" />
@@ -75,28 +75,60 @@
 
         <div class="d-flex gap-2">
             <button type="submit" class="btn btn-primary">
-                <i class="bi bi-check-lg"></i> Salvar
+                <i class="bi bi-check-lg"></i> @(Id.HasValue ? "Atualizar" : "Salvar")
             </button>
             <a href="/processos" class="btn btn-light border"> Cancelar </a>
         </div>
+
+        @if (Id.HasValue && !processoEncontrado)
+        {
+            <div class="alert alert-warning" role="alert">
+                Processo não encontrado.
+                <a href="/processos" class="alert-link">Voltar para a lista</a>
+            </div>
+        } else
+        {
+            @* ... EditForm com os campos ... *@
+        }
+
     </EditForm>
 </div>
 
 @code {
     private Processo processo = new();
-    private string? mensagemErro;
+    private bool processoEncontrado = true;
+
+    [Parameter]
+    public int? Id { get; set; }
+
+    private string Titulo => Id.HasValue ? "Editar Processo" : "Cadastro de Processo";
+
+    protected override void OnParametersSet()
+    {
+        if (!Id.HasValue)
+        {
+            processo = new Processo();
+        }
+
+        var processsoCarregado = dao.ObterPorId(Id.Value);
+        processoEncontrado = processsoCarregado is not null;
+        if (processsoCarregado is not null)
+        {
+            processo = processsoCarregado;
+        }
+    }
 
     private void Salvar()
     {
-        try
+        if (Id.HasValue)
         {
-            mensagemErro = null;
+            dao.Atualizar(processo);
+        }
+        else
+        {
             dao.Inserir(processo);
-            NavigationManager.NavigateTo("/processos");
         }
-        catch (Exception ex)
-        {
-            mensagemErro = ex.Message;
-        }
+
+        NavigationManager.NavigateTo("/processos");
     }
 }
